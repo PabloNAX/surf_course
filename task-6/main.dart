@@ -15,7 +15,7 @@ List<Product> convertStringToProduct(String articles) {
   List<String> articleList = articles.trim().split('\n');
   articleList.forEach((e) {
     var line = e.split(',');
-    print(line);
+    // print(line);
     var prod = Product(
       int.parse(line[0].trim()),
       line[1],
