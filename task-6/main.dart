@@ -30,9 +30,7 @@ List<Product> convertStringToProduct(String articles) {
 
 // Interface for Filter
 abstract class Filter {
-  bool apply(Product product) {
-    throw UnimplementedError();
-  }
+  bool apply(Product product);
 }
 
 // Custom Filter for category
@@ -42,7 +40,7 @@ class CategoryFilter implements Filter {
 
   @override
   bool apply(Product product) {
-    return product.category == this.category ? true : false;
+    return product.category == category;
   }
 }
 
@@ -64,11 +62,8 @@ class Product {
 
 /// Apply filter funciton for proccessing
 List<Product> applyFilter(List<Product> products, Filter filter) {
-  List<Product> filteredProducts = [];
-  products.forEach((element) {
-    if (filter.apply(element)) filteredProducts.add(element);
-  });
-  return filteredProducts;
+  final filteredProducts = products.where(filter.apply);
+  return filteredProducts.toList();
 }
 
 /// Main funciton
