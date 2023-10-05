@@ -33,7 +33,16 @@ class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   late Color color;
   late double top;
-  late AnimationController _controller;
+  bool selected = false;
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 2),
+    vsync: this,
+  );
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.elasticOut,
+  );
 
   @override
   void initState() {
@@ -41,16 +50,37 @@ class _MyHomePageState extends State<MyHomePage>
 
     color = Colors.amber;
     top = 0;
-    _controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
+    _controller.stop();
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  // Change position
+  onDragStart(detailes) {
+    setState(() {
+      selected = !selected;
+    });
+  }
+
+  // Change color
+  onTap() {
+    setState(() {
+      color = color == Colors.black ? Colors.amber : Colors.black;
+    });
+  }
+
+  // Rotating
+  onLongPress() {
+    print(_controller.status);
+    if (_controller.isAnimating) {
+      _controller.stop();
+    } else {
+      _controller.repeat();
+    }
   }
 
   @override
@@ -68,42 +98,23 @@ class _MyHomePageState extends State<MyHomePage>
               right: 0,
               bottom: 0,
               child: Center(
-                  child: AnimatedBuilder(
-                animation: _controller,
-                builder: (_, __) {
-                  return Transform.rotate(
-                    angle: _controller.value,
-                    child: Container(width: 200, height: 200, color: color),
-                  );
-                },
-              )),
+                child: AnimatedContainer(
+                  alignment: selected
+                      ? Alignment.topCenter
+                      : AlignmentDirectional.center,
+                  duration: const Duration(seconds: 2),
+                  curve: Curves.fastOutSlowIn,
+                  child: RotationTransition(
+                      turns: _animation,
+                      child: Container(width: 200, height: 200, color: color)),
+                ),
+              ),
             ),
             Positioned.fill(
               child: GestureDetector(
-                onVerticalDragStart: (details) {
-                  setState(() {
-                    top = details.globalPosition.dy.abs();
-                  });
-                },
-                onVerticalDragEnd: (details) {
-                  setState(() {
-                    top = 0;
-                  });
-                },
-                onTap: () {
-                  setState(() {
-                    color = color == Colors.black ? Colors.amber : Colors.black;
-                  });
-                },
-                onLongPress: () {
-                  setState(() {
-                    if (_controller.isAnimating) {
-                      _controller.stop();
-                    } else {
-                      _controller.repeat();
-                    }
-                  });
-                },
+                onVerticalDragStart: onDragStart,
+                onTap: onTap,
+                onLongPress: onLongPress,
               ),
             ),
           ],
