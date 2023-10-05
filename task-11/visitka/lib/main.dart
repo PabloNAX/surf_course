@@ -26,57 +26,84 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
       body: SingleChildScrollView(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.all(20.0),
-                child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/my_photo.JPG'),
-                  radius: 50.0,
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 94,
                 ),
-              ),
-              const Text(
-                'Павел Калошин',
-                style: TextStyle(
-                  fontSize: 40.0,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Divider(),
-              Card(
-                child: ListTile(
-                  leading: SvgPicture.asset('assets/images/info.svg'),
-                  title: const Text('О себе'),
-                  subtitle:
-                      const Text('Здесь вы можете написать что-то о себе.'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: SvgPicture.asset('assets/images/hobby.svg'),
-                  title: const Text('Увлечения'),
-                  subtitle: const Text(
-                    'Example of happy sans font',
-                    style: TextStyle(fontFamily: 'HappySans', fontSize: 24),
+                const Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/my_photo.JPG'),
+                    radius: 50.0,
                   ),
                 ),
-              ),
-              const Card(
-                child: ListTile(
-                  leading: Icon(Icons.sentiment_very_satisfied),
-                  title: Text('Опыт в разработке'),
-                  subtitle: Text(
-                      'Здесь вы можете написать о своем опыте в разработке.'),
+                const Text(
+                  'Павел Калошин',
+                  style: TextStyle(
+                    fontSize: 40.0,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
+                const Divider(),
+                Card(
+                  child: ListTile(
+                    leading: SvgPicture.asset('assets/images/info.svg'),
+                    title: const Padding(
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Text(
+                        'О себе',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    subtitle:
+                        const Text('Нравится решать сложные задачи и челенджи'),
+                  ),
+                ),
+                const Card(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.play_circle,
+                      color: Colors.black,
+                    ),
+                    title: Padding(
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Text(
+                        'Увлечения',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Reading, Surfing, Marshal arts, Personal devepment',
+                      style: TextStyle(fontFamily: 'HappySans', fontSize: 24),
+                    ),
+                  ),
+                ),
+                const Card(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.laptop,
+                      color: Colors.black,
+                    ),
+                    title: Padding(
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Text(
+                        'Опыт в разработке',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    subtitle: Text(
+                        'В основном Web Разработка, python, js, php. Перехожу в мобильный мир'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
