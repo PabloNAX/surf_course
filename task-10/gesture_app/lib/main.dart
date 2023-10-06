@@ -31,25 +31,34 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  late Color color;
-  late double top;
-  bool selected = false;
-
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 2),
-    vsync: this,
-  );
-  late final Animation<double> _animation = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.elasticOut,
-  );
+  late Color _color;
+  late double _top;
+  late double _left;
+  late double _bottom;
+  late double _right;
+  bool _selected = false;
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
+    _color = Colors.amber;
+    _top = 0;
+    _left = 0;
 
-    color = Colors.amber;
-    top = 0;
+    // Controller init
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+
+    // Animation init
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.elasticOut,
+    );
+
     _controller.stop();
   }
 
@@ -60,22 +69,22 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   // Change position
-  onDragStart(detailes) {
+  void onDragStart(DragStartDetails detailes) {
     setState(() {
-      selected = !selected;
+      _top = detailes.localPosition.dy;
+      _left = detailes.localPosition.dx;
     });
   }
 
   // Change color
-  onTap() {
+  void onTap() {
     setState(() {
-      color = color == Colors.black ? Colors.amber : Colors.black;
+      _color = _color == Colors.black ? Colors.amber : Colors.black;
     });
   }
 
   // Rotating
-  onLongPress() {
-    print(_controller.status);
+  void onLongPress() {
     if (_controller.isAnimating) {
       _controller.stop();
     } else {
@@ -93,20 +102,18 @@ class _MyHomePageState extends State<MyHomePage>
         body: Stack(
           children: [
             Positioned(
-              top: top,
-              left: 0,
-              right: 0,
-              bottom: 0,
+              top: _top,
+              left: _left,
               child: Center(
                 child: AnimatedContainer(
-                  alignment: selected
+                  alignment: _selected
                       ? Alignment.topCenter
                       : AlignmentDirectional.center,
                   duration: const Duration(seconds: 2),
                   curve: Curves.fastOutSlowIn,
                   child: RotationTransition(
                       turns: _animation,
-                      child: Container(width: 200, height: 200, color: color)),
+                      child: Container(width: 200, height: 200, color: _color)),
                 ),
               ),
             ),
