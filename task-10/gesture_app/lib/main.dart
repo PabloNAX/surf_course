@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -34,18 +36,24 @@ class _MyHomePageState extends State<MyHomePage>
   late Color _color;
   late double _top;
   late double _left;
-  late double _bottom;
-  late double _right;
-  bool _selected = false;
   late final AnimationController _controller;
   late final Animation<double> _animation;
+  final MediaQueryData dataSizes = MediaQueryData.fromView(
+      WidgetsBinding.instance.platformDispatcher.views.single);
+  // Sizes for container to calculate later the X and Y coordinates
+  final double containerHeigh = 200;
+  final double containerWidth = 200;
 
   @override
   void initState() {
     super.initState();
     _color = Colors.amber;
-    _top = 0;
-    _left = 0;
+
+    final double width = dataSizes.size.width;
+    final double height = dataSizes.size.height;
+    // Calculate the inistal center coordinates
+    _top = (height - containerHeigh) / 2;
+    _left = (width - containerWidth) / 2;
 
     // Controller init
     _controller = AnimationController(
@@ -71,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage>
   // Change position
   void onDragStart(DragStartDetails detailes) {
     setState(() {
+      // Assign top/left positions
       _top = detailes.localPosition.dy;
       _left = detailes.localPosition.dx;
     });
@@ -95,36 +104,34 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-        ),
         body: Stack(
-          children: [
-            Positioned(
-              top: _top,
-              left: _left,
-              child: Center(
-                child: AnimatedContainer(
-                  alignment: _selected
-                      ? Alignment.topCenter
-                      : AlignmentDirectional.center,
-                  duration: const Duration(seconds: 2),
-                  curve: Curves.fastOutSlowIn,
-                  child: RotationTransition(
-                      turns: _animation,
-                      child: Container(width: 200, height: 200, color: _color)),
+      children: [
+        Positioned(
+          top: _top,
+          left: _left,
+          child: Center(
+            child: AnimatedContainer(
+              duration: const Duration(seconds: 2),
+              curve: Curves.fastOutSlowIn,
+              child: RotationTransition(
+                turns: _animation,
+                child: Container(
+                  width: containerHeigh,
+                  height: containerWidth,
+                  color: _color,
                 ),
               ),
             ),
-            Positioned.fill(
-              child: GestureDetector(
-                onVerticalDragStart: onDragStart,
-                onTap: onTap,
-                onLongPress: onLongPress,
-              ),
-            ),
-          ],
-        ));
+          ),
+        ),
+        Positioned.fill(
+          child: GestureDetector(
+            onVerticalDragStart: onDragStart,
+            onTap: onTap,
+            onLongPress: onLongPress,
+          ),
+        ),
+      ],
+    ));
   }
 }
