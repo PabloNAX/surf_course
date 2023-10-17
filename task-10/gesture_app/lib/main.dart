@@ -38,22 +38,13 @@ class _MyHomePageState extends State<MyHomePage>
   late double _left;
   late final AnimationController _controller;
   late final Animation<double> _animation;
-  final MediaQueryData dataSizes = MediaQueryData.fromView(
-      WidgetsBinding.instance.platformDispatcher.views.single);
   // Sizes for container to calculate later the X and Y coordinates
-  final double containerHeigh = 200;
   final double containerWidth = 200;
 
   @override
   void initState() {
     super.initState();
     _color = Colors.amber;
-
-    final double width = dataSizes.size.width;
-    final double height = dataSizes.size.height;
-    // Calculate the inistal center coordinates
-    _top = (height - containerHeigh) / 2;
-    _left = (width - containerWidth) / 2;
 
     // Controller init
     _controller = AnimationController(
@@ -71,13 +62,23 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final Size screenSize = MediaQuery.of(context).size;
+
+    _top = (screenSize.height - containerWidth) / 2;
+    _left = (screenSize.width - containerWidth) / 2;
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
   // Change position
-  void onDragStart(DragStartDetails detailes) {
+  void onPanUpdate(DragUpdateDetails detailes) {
     setState(() {
       // Assign top/left positions
       _top = detailes.localPosition.dy;
@@ -106,27 +107,26 @@ class _MyHomePageState extends State<MyHomePage>
     return Scaffold(
         body: Stack(
       children: [
-        Positioned(
+        AnimatedPositioned(
+          duration: const Duration(seconds: 2),
           top: _top,
           left: _left,
           child: Center(
-            child: AnimatedContainer(
-              duration: const Duration(seconds: 2),
-              curve: Curves.fastOutSlowIn,
-              child: RotationTransition(
-                turns: _animation,
-                child: Container(
-                  width: containerHeigh,
-                  height: containerWidth,
-                  color: _color,
-                ),
+            child: RotationTransition(
+              turns: _animation,
+              child: AnimatedContainer(
+                duration: const Duration(seconds: 2),
+                curve: Curves.fastOutSlowIn,
+                width: containerWidth,
+                height: containerWidth,
+                color: _color,
               ),
             ),
           ),
         ),
         Positioned.fill(
           child: GestureDetector(
-            onVerticalDragStart: onDragStart,
+            onPanUpdate: onPanUpdate,
             onTap: onTap,
             onLongPress: onLongPress,
           ),
